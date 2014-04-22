@@ -1,0 +1,17 @@
+{
+  "name": "taggingjs",
+  "repo": "andyburke/taggingjs",
+  "description": "A simple javascript library for editing tags.",
+  "version": "0.0.1",
+  "keywords": [
+    "tagging"
+  ],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "main": "generator.js",
+  "scripts": [
+    "tagging.js",
+    "color.js"
+  ]
+}

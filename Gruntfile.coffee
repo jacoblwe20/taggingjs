@@ -19,20 +19,7 @@ module.exports = (grunt) ->
 
       all: ['<%= jsCoreFile %>']
 
-    uglify:
-      options:
-        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */'
-
-        mangle:
-          except: ['jQuery']
-      dist:
-        files: [
-          { src: ['<%= jsCoreFile %>'], dest: '<%= jsCoreFileMin %>' }
-        ]
-
   # Loading Tasks
-  grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-jshint'
 
   grunt.registerTask 'default', [ 'jshint', ]
-  grunt.registerTask 'dist', [ 'jshint', 'uglify', ]
