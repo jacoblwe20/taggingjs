@@ -9,5 +9,5 @@
   "dependencies": {},
   "development": {},
   "license": "MIT",
-  "main": "tagging.js"
+  "scripts": ["tagging.js"]
 }
