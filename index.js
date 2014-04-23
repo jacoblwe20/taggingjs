@@ -32,7 +32,9 @@ function Tagging ( $, selector, options ){
     var $this,
         settings, default_options,
         tags,
-        fill_data_options, add_tag, error;
+        emitter,
+        fill_data_options, 
+        add_tag, error;
 
     // Saving for very slight optimization
     $this = $( selector );
@@ -72,7 +74,7 @@ function Tagging ( $, selector, options ){
     // Overwriting default settings with Object passed by user
     //   N.B.: These settings work for all tags box captured, unless given specific data attributes.
     settings = $.extend( {}, default_options, options );
-
+    
     /**
      * Filling data_options with data attributes
      *
@@ -104,7 +106,7 @@ function Tagging ( $, selector, options ){
     };
 
     /**
-     * Remov a tag
+     * Remove a tag
      *
      * @param  function callback_f    Callback to invoke
      * @param  string   callback_t    Text to use in callback
@@ -210,10 +212,11 @@ function Tagging ( $, selector, options ){
             }
         }
 
+
         // Creating a new div for the new tag
         $tag = $( "<div/>" )
-                    .addClass( "tag" )
-                    .html( "<span>#</span> " + text );
+            .addClass( "tag" )
+            .html( (settings.prefix || '') + text );
 
         // Creating and Appending hidden input
         $( "<input/>" )
@@ -226,16 +229,29 @@ function Tagging ( $, selector, options ){
         // Creating and tag button (with "x" to remove tag)
         $( "<a/>" )
             .attr( "role", "button" )
+            .attr( "href", "#" )
             // adding custom class
             .addClass( actual_settings[ "close-class" ] )
             // using custom char
             .html( actual_settings[ "close-char" ] )
             // click addEventListener
             .click(function() {
+                emit('tags.remove', {
+                    value : $tag.find('input').val(), 
+                    $target : $tag,
+                    $parent : $this
+                });
                 $tag.remove();
             })
             // finally append close button to tag element
             .appendTo( $tag );
+
+        // emit tag.added with text and tag element
+        emit('tags.add', {
+            value : text,
+            $target : $tag,
+            $parent : $this    
+        });
 
         // Adding pure_text property to $tag
         $tag.pure_text = text;
@@ -247,6 +263,29 @@ function Tagging ( $, selector, options ){
         $type_zone.before( $tag );
 
         return false;
+    };
+
+    // emit - for emitting events optionally pass in a emitter to emit to
+    // works with both nodejs and jquery style event emitters
+    emit = function ( ) {
+        var _emitter = settings.emitter,
+            // ability to namespace events
+            namespace = settings.namespace;
+        if ( typeof arguments[0] !== 'string' ) return;
+        
+        if ( namespace ) {
+            arguments[0] = namespace + '.' + arguments[0];
+        }
+
+        if ( _emitter ) {
+            if ( typeof _emitter.emit === 'function' ) {
+                return _emitter.emit.apply( _emitter, arguments );
+            }
+
+            if ( typeof _emitter.trigger === "function" ) {
+                return _emitter.trigger.apply( _emitter, arguments );
+            }
+        }
     };
 
     // For each 'tag_box' (caught with user's jQuery selector)
@@ -343,6 +382,11 @@ function Tagging ( $, selector, options ){
                                 if ( $last_tag !== undefined ) {
 
                                     // Removing last tag
+                                    emit('tags.remove', {
+                                        value : $last_tag.find('input').val(), 
+                                        $target : $last_tag,
+                                        $parent : $this
+                                    });
                                     $last_tag.remove();
 
                                     // If you want to change the text when a tag is deleted
@@ -414,7 +458,11 @@ function Tagging ( $, selector, options ){
                     }
                 }
             }
-
+            emit('tags.keypress', {
+                value : actual_text, 
+                $target : $type_zone,
+                $parent : $this
+            });
             // Exit with success
             return true;
         });

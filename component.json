@@ -9,5 +9,6 @@
   "dependencies": {},
   "development": {},
   "license": "MIT",
-  "scripts": ["index.js"]
+  "scripts": ["index.js"],
+  "styles": ["index.css"]
 }
