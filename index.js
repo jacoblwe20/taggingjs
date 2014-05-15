@@ -81,8 +81,8 @@ function Tagging ( _$, selector, options ){
         // the actual tagging box
         $actual_tag_box = $( this );
 
-        // Pre-existent text
-        init_text = $actual_tag_box.text();
+        // Pre-existent text 
+        init_text = ($actual_tag_box.html( ) + '').trim();
 
         // Empty the original div
         $actual_tag_box.empty();
@@ -255,6 +255,19 @@ function Tagging ( _$, selector, options ){
         _this.$type_zone.on( "focus", function() {
             this.selectionStart = this.selectionEnd = $(this).val().length;
         });
+
+        // if it looks like html
+        if ( /^\</.test( init_text ) ) {
+
+            // split up 
+            var $tags = $( init_text );
+            $tags.each( function( ) {
+                var txt = this.innerText;
+                _this.add_tag( _this.$type_zone, txt, _this.settings, true );
+            });
+            return;
+        }
+
         // Adding text present on type_zone as tag on first call
         $.each( init_text.split(_this.settings['pre-tags-separator']), function() {
             _this.add_tag( _this.$type_zone, this.toString(), _this.settings, true );
