@@ -2,7 +2,7 @@
   "name": "taggingjs",
   "repo": "jacoblwe20/taggingjs",
   "description": "A simple javascript library for editing tags.",
-  "version": "0.0.1",
+  "version": "1.3.6",
   "keywords": [
     "tagging"
   ],

@@ -397,6 +397,10 @@ Tagging.prototype.add_tag = function( $type_zone, text, actual_settings, skipEmi
                 $target : $tag,
                 $parent : _this.$el
             });
+            var existingIndex = _this.tags.indexOf( $tag );
+            if ( existingIndex > -1 ) {
+                _this.tags.splice( existingIndex, 1 );
+            }
             $tag.remove();
         })
         // finally append close button to tag element
