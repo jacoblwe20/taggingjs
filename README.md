@@ -2,12 +2,10 @@
 
 [![Build Status](https://travis-ci.org/sniperwolf/taggingJS.svg?branch=master)](https://travis-ci.org/sniperwolf/taggingJS)
 
-## jQuery plugin to tagging like a charm! ##
+## A jQuery/Zepto plugin to make tagging easy. ##
 
-**taggingJS** is a jQuery plugin to create an high customizable front-end tag system.
-It is less than `3 kb` and [support major browsers](#browser-support) in the world!
-
-Actual version is `1.2.5`.
+**taggingJS** is a jQuery/Zepto plugin to create a highly customizable tagging UI.
+It is less than `3 kb` and [supports all major browsers](#browser-support)!
 
 ![Example Image](example/example_img.png)
 
