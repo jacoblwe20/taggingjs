@@ -29,40 +29,40 @@ module.exports = Tagging;
 // make jQuery availiable globally
 var $;
 
-function Tagging ( _$, selector, options ){ 
+function Tagging( _$, selector, options ) {
 
     var _this = this;
     $ = _$;
-    noop = function () {};
+    noop = function() {};
     // Setting up default options (in alphabetical order)
     this.default_options = {
-        "case-sensitive": false,                        // True to allow differences between lowercase and uppercase
-        "close-char": "&times;",                        // Single Tag close char
-        "close-class": "tag-i",                         // Single Tag close class
-        "edit-on-delete": true,                         // True to edit tag that has just been removed from tag box
-        "forbidden-chars": [ ".", "_", "?" ],           // Array of forbidden characters
-        "forbidden-chars-callback": noop,               // Function to call when there is a forbidden chars
+        "case-sensitive": false, // True to allow differences between lowercase and uppercase
+        "close-char": "&times;", // Single Tag close char
+        "close-class": "tag-i", // Single Tag close class
+        "edit-on-delete": true, // True to edit tag that has just been removed from tag box
+        "forbidden-chars": [ ".", "_", "?" ], // Array of forbidden characters
+        "forbidden-chars-callback": noop, // Function to call when there is a forbidden chars
         "forbidden-chars-text": "Forbidden character:", // Basic text passed to forbidden-chars callback
-        "forbidden-words": [],                          // Array of forbidden words
-        "forbidden-words-callback": noop,               // Function to call when there is a forbidden words
-        "forbidden-words-text": "Forbidden word:",      // Basic text passed to forbidden-words callback
-        "no-backspace": false,                          // Backspace key remove last tag, true to avoid that
-        "no-comma": false,                              // Comma "," key add a new tag, true to avoid that
-        "no-del": false,                                // Delete key remove last tag, true to avoid that
-        "no-duplicate": true,                           // No duplicate in tag box
-        "no-duplicate-callback": noop,                  // Function to call when there is a duplicate tag
-        "no-duplicate-text": "Duplicate tag:",          // Basic text passed to no-duplicate callback
-        "no-enter": false,                              // Enter key add a new tag, true to avoid that
-        "no-spacebar": false,                           // Spacebar key add a new tag by default, true to avoid that
-        "pre-tags-separator": ", ",                     // By default, you must put new tags using a new line
-        "tag-box-class": "tagging",                     // Class of the tag box
-        "tag-char": "#",                                // Single Tag char
-        "tag-class": "tag",                             // Single Tag class
-        "tags-input-name": "tag",                       // Name to use as name="" in single tags (by default tag[])
-        "type-zone-class": "type-zone",                 // Class of the type-zone
+        "forbidden-words": [], // Array of forbidden words
+        "forbidden-words-callback": noop, // Function to call when there is a forbidden words
+        "forbidden-words-text": "Forbidden word:", // Basic text passed to forbidden-words callback
+        "no-backspace": false, // Backspace key remove last tag, true to avoid that
+        "no-comma": false, // Comma "," key add a new tag, true to avoid that
+        "no-del": false, // Delete key remove last tag, true to avoid that
+        "no-duplicate": true, // No duplicate in tag box
+        "no-duplicate-callback": noop, // Function to call when there is a duplicate tag
+        "no-duplicate-text": "Duplicate tag:", // Basic text passed to no-duplicate callback
+        "no-enter": false, // Enter key add a new tag, true to avoid that
+        "no-spacebar": false, // Spacebar key add a new tag by default, true to avoid that
+        "pre-tags-separator": ", ", // By default, you must put new tags using a new line
+        "tag-box-class": "tagging", // Class of the tag box
+        "tag-char": "#", // Single Tag char
+        "tag-class": "tag", // Single Tag class
+        "tags-input-name": "tag", // Name to use as name="" in single tags (by default tag[])
+        "type-zone-class": "type-zone", // Class of the type-zone
     };
-        
-     // Saving for very slight optimization
+
+    // Saving for very slight optimization
     this.$el = $( selector );
 
     // Here we will save all tags (for reference)
@@ -72,26 +72,27 @@ function Tagging ( _$, selector, options ){
 
     // For each 'tag_box' (caught with user's jQuery selector)
     // TODO : Decouple alot of this monster
-    this.$el.each(function() {
+    this.$el.each( function() {
 
         var init_text, $actual_tag_box,
-            add_keys, all_keys, remove_keys; /*KEYS_OBJ, ADD_KEYS_OBJ, REMOVE_KEYS_OBJ,
+            add_keys, all_keys, remove_keys;
+        /*KEYS_OBJ, ADD_KEYS_OBJ, REMOVE_KEYS_OBJ,
             l, i, _i, _l, key_obj;*/
 
         // the actual tagging box
         $actual_tag_box = $( this );
 
         // Pre-existent text 
-        init_text = ($actual_tag_box.html( ) + '').trim();
+        init_text = ( $actual_tag_box.html() + '' ).trim();
 
         // Empty the original div
         $actual_tag_box.empty();
 
         // Create the type_zone input using custom class and contenteditable attribute
         _this.$type_zone = $( "<input/>" )
-                         .addClass( _this.settings[ "type-zone-class" ] )
-                         .attr( 'placeholder', _this.settings.placeholder || 'Enter a Tag' )
-                         .attr( "contenteditable", true );
+            .addClass( _this.settings[ "type-zone-class" ] )
+            .attr( 'placeholder', _this.settings.placeholder || 'Enter a Tag' )
+            .attr( "contenteditable", true );
 
         // Adding tagging class and appending the type zone
         $actual_tag_box
@@ -100,8 +101,8 @@ function Tagging ( _$, selector, options ){
 
         // Special keys to add a tag
         add_keys = {
-            comma:    188,
-            enter:    13
+            comma: 188,
+            enter: 13
         };
 
         // Special keys to remove last tag
@@ -115,7 +116,7 @@ function Tagging ( _$, selector, options ){
 
 
         // Keydown event listener on type_zone
-        _this.$type_zone.on( "keydown", function(e) {
+        _this.$type_zone.on( "keydown", function( e ) {
             var $last_tag, key, index, i, l,
                 forbidden_chars, actual_text, pressed_key,
                 callback_f, callback_t;
@@ -124,10 +125,10 @@ function Tagging ( _$, selector, options ){
             forbidden_chars = _this.settings[ "forbidden-chars" ];
 
             // Actual text in the type_zone
-            actual_text     = _this.$type_zone.val();
+            actual_text = _this.$type_zone.val();
 
             // The pressed key
-            pressed_key     = e.which;
+            pressed_key = e.which;
 
             // For in loop to look to Remove Keys
             if ( actual_text === "" ) {
@@ -151,7 +152,7 @@ function Tagging ( _$, selector, options ){
                         if ( remove_keys[ key ] !== undefined ) {
 
                             // Checking if it enabled
-                            if ( ! _this.settings[ "no-" + key ] ) {
+                            if ( !_this.settings[ "no-" + key ] ) {
 
                                 // Prevent Default
                                 e.preventDefault();
@@ -163,11 +164,11 @@ function Tagging ( _$, selector, options ){
                                 if ( $last_tag !== undefined ) {
 
                                     // Removing last tag
-                                    _this.emit('tags.remove', {
-                                        value : $last_tag.find('input').val(), 
-                                        $target : $last_tag,
-                                        $parent : _this.$el
-                                    });
+                                    _this.emit( 'tags.remove', {
+                                        value: $last_tag.find( 'input' ).val(),
+                                        $target: $last_tag,
+                                        $parent: _this.$el
+                                    } );
                                     $last_tag.remove();
 
                                     // If you want to change the text when a tag is deleted
@@ -185,14 +186,15 @@ function Tagging ( _$, selector, options ){
                         return false;
                     }
                 }
-            } else {
+            }
+            else {
 
                 // For in to look in Add Keys
                 for ( key in add_keys ) {
 
                     // Enter or comma or spacebar if enabled
                     if ( pressed_key === add_keys[ key ] ) {
-                        if ( ! _this.settings[ "no-" + key ] ) {
+                        if ( !_this.settings[ "no-" + key ] ) {
 
                             // Prevent Default
                             e.preventDefault();
@@ -237,43 +239,43 @@ function Tagging ( _$, selector, options ){
                     }
                 }
             }
-            _this.emit('tags.keypress', {
-                value : actual_text, 
-                $target : _this.$type_zone,
-                $parent : _this.$el
-            });
+            _this.emit( 'tags.keypress', {
+                value: actual_text,
+                $target: _this.$type_zone,
+                $parent: _this.$el
+            } );
             // Exit with success
             return true;
-        });
+        } );
 
         // On click, we focus the type_zone
         $actual_tag_box.on( "click", function() {
             _this.$type_zone.focus();
-        });
+        } );
 
         // @link stackoverflow.com/questions/12911236/setting-focus-to-the-end-of-a-textarea
         _this.$type_zone.on( "focus", function() {
-            this.selectionStart = this.selectionEnd = $(this).val().length;
-        });
+            this.selectionStart = this.selectionEnd = $( this ).val().length;
+        } );
 
         // if it looks like html
         if ( /^\</.test( init_text ) ) {
 
             // split up 
             var $tags = $( init_text );
-            $tags.each( function( ) {
+            $tags.each( function() {
                 var txt = this.innerText;
                 _this.add_tag( _this.$type_zone, txt, _this.settings, true );
-            });
+            } );
             return;
         }
 
         // Adding text present on type_zone as tag on first call
-        $.each( init_text.split(_this.settings['pre-tags-separator']), function() {
+        $.each( init_text.split( _this.settings[ 'pre-tags-separator' ] ), function() {
             _this.add_tag( _this.$type_zone, this.toString(), _this.settings, true );
-        });
+        } );
 
-    });
+    } );
 
 }
 
@@ -286,13 +288,14 @@ function Tagging ( _$, selector, options ){
  * @return boolean                      true => OK, tag added | false => Something is wrong
  */
 Tagging.prototype.add_tag = function( $type_zone, text, actual_settings, skipEmit ) {
-    var i, l, t, 
-        index, 
-        forbidden_words, 
-        callback_f, 
-        callback_t, 
-        $tag, 
+    var i, l, t,
+        index,
+        forbidden_words,
+        callback_f,
+        callback_t,
+        $tag,
         _this = this;
+
 
     // If there are no specific settings, use the ones defined at the top
     actual_settings = actual_settings || this.settings;
@@ -301,15 +304,17 @@ Tagging.prototype.add_tag = function( $type_zone, text, actual_settings, skipEmi
     forbidden_words = actual_settings[ "forbidden-words" ];
 
     // If no text is passed, take it as text of _this.$type_zone and then empty it
-    if ( ! text ) {
+    if ( !text ) {
         text = this.$type_zone.val();
         this.$type_zone.val( "" );
     }
 
-    // If it is empty too, then go out
-    if ( ! text || ! text.length ) {
+    // If it is empty too, then stop
+    if ( !text || !text.length ) {
         return false;
     }
+
+    text = ( text || '' ).trim();
 
     // If case-sensitive is true, write everything in lowercase
     if ( actual_settings[ "case-sensitive" ] === false ) {
@@ -354,7 +359,6 @@ Tagging.prototype.add_tag = function( $type_zone, text, actual_settings, skipEmi
                 t = this.tags[ i ].pure_text;
 
                 if ( t === text ) {
-
                     // Removing all text and ','
                     this.$type_zone.val( "" );
 
@@ -373,42 +377,42 @@ Tagging.prototype.add_tag = function( $type_zone, text, actual_settings, skipEmi
     // Creating a new div for the new tag
     $tag = $( "<div/>" )
         .addClass( "tag" )
-        .html( ( this.settings.prefix || '') + text );
+        .html( ( this.settings.prefix || '' ) + text );
 
     // Creating and Appending hidden input
     $( "<input/>" )
         .attr( "type", "hidden" )
-        // custom input name
-        .attr( "name", actual_settings[ "tags-input-name" ] + "[]" )
+    // custom input name
+    .attr( "name", actual_settings[ "tags-input-name" ] + "[]" )
         .val( text )
         .appendTo( $tag );
 
     // Creating and tag button (with "x" to remove tag)
     $( "<span/>" )
         .attr( "role", "button" )
-        // adding custom class
-        .addClass( actual_settings[ "close-class" ] )
-        // using custom char
-        .html( actual_settings[ "close-char" ] )
-        // click addEventListener
-        .click(function() {
-            _this.emit('tags.remove', {
-                value : $tag.find('input').val(), 
-                $target : $tag,
-                $parent : _this.$el
-            });
-            $tag.remove();
-        })
-        // finally append close button to tag element
-        .appendTo( $tag );
+    // adding custom class
+    .addClass( actual_settings[ "close-class" ] )
+    // using custom char
+    .html( actual_settings[ "close-char" ] )
+    // click addEventListener
+    .click( function() {
+        _this.emit( 'tags.remove', {
+            value: $tag.find( 'input' ).val(),
+            $target: $tag,
+            $parent: _this.$el
+        } );
+        $tag.remove();
+    } )
+    // finally append close button to tag element
+    .appendTo( $tag );
 
     // emit tag.added with text and tag element
     if ( !skipEmit ) {
-        this.emit('tags.add', {
-            value : text,
-            $target : $tag,
-            $parent : this.$el    
-        });
+        this.emit( 'tags.add', {
+            value: text,
+            $target: $tag,
+            $parent: this.$el
+        } );
     }
 
     // Adding pure_text property to $tag
@@ -423,14 +427,14 @@ Tagging.prototype.add_tag = function( $type_zone, text, actual_settings, skipEmi
     return false;
 };
 
-Tagging.prototype.emit = function ( ) {
+Tagging.prototype.emit = function() {
     var _emitter = this.settings.emitter,
         // ability to namespace events
         namespace = this.settings.namespace;
-    if ( typeof arguments[0] !== 'string' ) return;
-    
+    if ( typeof arguments[ 0 ] !== 'string' ) return;
+
     if ( namespace ) {
-        arguments[0] = namespace + '.' + arguments[0];
+        arguments[ 0 ] = namespace + '.' + arguments[ 0 ];
     }
 
     if ( _emitter ) {
@@ -452,11 +456,10 @@ Tagging.prototype.emit = function ( ) {
  * @param  string   tag_text      Duplicate Text
  * @return boolean
  */
-Tagging.prototype.error = function(callback_f, callback_t, tag_text) {
+Tagging.prototype.error = function( callback_f, callback_t, tag_text ) {
     // Calling the callback with t as th
     callback_f.apply(
-        this,
-        [ callback_t + " '" + tag_text + "'." ]
+        this, [ callback_t + " '" + tag_text + "'." ]
     );
     // We don't add tag
     return false;
