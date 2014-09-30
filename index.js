@@ -248,6 +248,17 @@ function Tagging( _$, selector, options ) {
             return true;
         } );
 
+        _this.$type_zone.on( "blur", function( e ) {
+            // Actual text in the type_zone
+            var actual_text = _this.$type_zone.val();
+
+            if ( !actual_text.length ) {
+                return;
+            }
+            
+            return _this.add_tag( _this.$type_zone, null, _this.settings );
+        } );
+
         // On click, we focus the type_zone
         $actual_tag_box.on( "click", function() {
             _this.$type_zone.focus();
