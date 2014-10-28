@@ -387,8 +387,10 @@ Tagging.prototype.add_tag = function( $type_zone, text, actual_settings, skipEmi
 
     // Creating a new div for the new tag
     $tag = $( "<div/>" )
-        .addClass( "tag" )
-        .html( ( this.settings.prefix || '' ) + text );
+        .addClass( "tag" );
+
+    // don't use .html() to avoid executing any bad script
+    $tag[ 0 ].innerHTML = ( this.settings.prefix || '' ) + text;
 
     // Creating and Appending hidden input
     $( "<input/>" )
@@ -437,7 +439,9 @@ Tagging.prototype.add_tag = function( $type_zone, text, actual_settings, skipEmi
     this.tags.push( $tag );
 
     // Adding tag in the type zone
-    this.$type_zone.before( $tag );
+    // don't use .before() to avoid <script> tag execution
+    var parent = this.$type_zone.parent()[ 0 ];
+    parent.insertBefore( $tag[ 0 ], this.$type_zone[ 0 ] );
 
     return false;
 };
