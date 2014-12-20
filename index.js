@@ -275,7 +275,7 @@ function Tagging( _$, selector, options ) {
             // split up 
             var $tags = $( init_text );
             $tags.each( function() {
-                var txt = this.innerText;
+                var txt = this.innerHTML;
                 _this.add_tag( _this.$type_zone, txt, _this.settings, true );
             } );
             return;
