@@ -1,5 +1,5 @@
 {
-  "name": "taggingJS",
+  "name": "taggingjs",
   "version": "1.3.7",
   "devDependencies": {
     "grunt": "~0.4.2",
@@ -9,5 +9,8 @@
   },
   "scripts": {
     "test": "grunt dist --verbose"
+  },
+  "repository": {
+    "git": "https://github.com/jcblw/taggingjs"
   }
 }

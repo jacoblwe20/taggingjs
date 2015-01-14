@@ -7,7 +7,12 @@
 **taggingJS** is a jQuery/Zepto plugin to create a highly customizable tagging UI.
 It is less than `3 kb` and [supports all major browsers](#browser-support)!
 
-![Example Image](example/example_img.png)
+> The key api differnces between this and the main project is that jQuery or Zepto is passed in as first argument.
+
+** other additions **
+- support for [browserify](http://browserify.org)
+- support for component
+- events if event emitter is passed in options argument
 
 ## Getting Started ##
 
