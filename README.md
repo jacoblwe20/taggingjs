@@ -1,5 +1,7 @@
 # taggingJS #
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/jcblw/taggingjs.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/sniperwolf/taggingJS.svg?branch=master)](https://travis-ci.org/sniperwolf/taggingJS)
 
 ## A jQuery/Zepto plugin to make tagging easy. ##
